@@ -234,13 +234,14 @@ nav.tabs button.on .ti{filter:none;opacity:1;transform:translateY(-2px)}
       <h3 style="font-size:18px;margin-bottom:10px">🏅 My badges</h3>
       <div class="badges" id="badges"></div>
     </div>
-    <p class="foot">Facts checked October 2026. Rules change, so always confirm on the official DMW website or call 1348 before you pay or sign anything.</p>
+    <p class="foot">Facts checked 13 October 2026. Rules change, so always confirm on the official DMW website or call 1348 before you pay or sign anything.</p>
   </section>
 
   <!-- PATHS -->
   <section class="view" id="v-paths">
     <h2 class="h2">Where could I work? 🌏</h2>
-    <p class="sub">These are the best fits for your resort, cooking and maintenance skills. Numbers are typical, not promises. Tap ⭐ on your top 2 or 3.</p>
+    <p class="sub">These are the best fits for your resort, cooking and maintenance skills, from best to least good right now. Numbers are typical, not promises. Your real contract decides. Tap ⭐ on your top 2 or 3.</p>
+    <p class="sub" style="font-size:14px;margin-top:-6px">🗓️ Checked 13 October 2026.</p>
     <div id="pathList"></div>
     <div class="card avoid">
       <h3 style="font-size:20px;margin-bottom:6px">🚫 Paths to avoid</h3>
@@ -297,6 +298,11 @@ nav.tabs button.on .ti{filter:none;opacity:1;transform:translateY(-2px)}
       <div id="quiz"></div>
       <div id="verdict"></div>
       <button class="btn ghost small" id="quizReset" style="margin-top:10px">Start over</button>
+    </div>
+    <div class="card">
+      <h3 style="font-size:19px;margin-bottom:4px">😮 Surprises nobody tells you</h3>
+      <p class="sub" style="margin-bottom:6px">Knowing these now means fewer shocks later.</p>
+      <div id="surprises"></div>
     </div>
     <div class="card">
       <h3 style="font-size:19px;margin-bottom:8px">📞 Help numbers (tap to call)</h3>
@@ -360,7 +366,7 @@ const STAGES = [
      time:'20 minutes'},
     {id:'rules', t:'Learn the 6 golden safety rules',
      why:'Most people who get cheated were asked for money by a fake recruiter. Knowing the rules protects you.',
-     how:['Open the 🛡️ Safety tab and read the rules.','Save the 1348 hotline in your phone contacts now.'],
+     how:['Open the 🛡️ Safety tab and read the rules.','Also read "Surprises nobody tells you" on the same tab.','Save the hotline +63 2 1348 in your phone contacts now. It works from any phone, in the Philippines or abroad.'],
      time:'10 minutes'},
     {id:'trusted', t:'Choose 2 people I trust to follow my journey',
      why:'If something goes wrong, someone outside needs to know where you are and who your agency is.',
@@ -376,8 +382,8 @@ const STAGES = [
      cost:'₱155 to ₱365', time:'1 to 2 weeks'},
     {id:'passport', t:'Get my passport',
      why:'This is the most important paper. Without it, nothing else can happen.',
-     how:[`Book an appointment only at ${a(L.passport,'passport.gov.ph')}. Walk-ins are usually not accepted.`,'Bring your PSA birth certificate and a valid ID (like a UMID, PhilSys National ID, or driver\'s license).','Pay ₱950 for regular (about 2 weeks) or ₱1,200 for fast (about 1 week).','When it comes, check that your name and birthday are spelled correctly.'],
-     cost:'₱950 to ₱1,200', time:'2 to 4 weeks with the appointment'},
+     how:[`Book an appointment only at ${a(L.passport,'passport.gov.ph')}. An appointment is required. Never pay anyone to "get you a slot."`,'Check the list of accepted IDs on passport.gov.ph before you go. Bring your PSA birth certificate and one valid government ID (for example your PhilSys National ID).','Pay ₱950 for regular or ₱1,200 for fast (plus about ₱50 payment fee). Regular takes about 2 to 4 weeks. Fast takes about 1 to 2 weeks. It depends on the office.','When it comes, check that your name and birthday are spelled correctly.','Use the same name spelling on every paper and form from now on.'],
+     cost:'₱950 to ₱1,250', time:'1 to 2 months including the appointment wait'},
     {id:'nbi', t:'Get my NBI clearance',
      why:'Employers abroad need proof you have no criminal record.',
      how:[`Register at ${a(L.nbi,'clearance.nbi.gov.ph')}.`,'Pick a date, pay online (about ₱155), and go for your photo and fingerprints.'],
@@ -400,8 +406,8 @@ const STAGES = [
      time:'10 minutes'},
     {id:'tesda', t:'Get a TESDA NC II certificate (free)',
      why:'Many hotel and cruise jobs abroad ask for an NC II. It also helps you earn more.',
-     how:['Pick the one that matches your top path: Housekeeping NC II, Food and Beverage Services NC II, or Cookery NC II.',`Go to your TESDA Provincial or District office and ask for a free TWSP or STEP scholarship. Info: ${a(L.tesda,'tesda.gov.ph')}.`,'Bring your ID and, if they ask, a barangay certificate of low income.','With your experience, you may be able to take only the assessment (test) without the full course. Ask about this.'],
-     cost:'Free with a scholarship', time:'1 day to 2 months'},
+     how:['Pick the one that matches your top path: Housekeeping NC II, Food and Beverage Services NC II, or Cookery NC II.',`Go to your TESDA Provincial or District office. Ask for a free TWSP or STEP scholarship for the course. Info: ${a(L.tesda,'tesda.gov.ph')}.`,'With your years of experience, you can ask to take only the assessment (the test) without the full course. The test alone costs about ₱1,000 at an accredited center. Ask if a scholarship can cover it.','Bring your ID and your Certificate of Employment. They may also ask for a barangay certificate of low income.'],
+     cost:'Free with a scholarship, or about ₱1,000 for the test only', time:'1 day (test only) to 3 months (full course)'},
     {id:'cv', t:'Write my CV (resume)',
      why:'Your CV is how a recruiter decides to call you.',
      how:['Keep it to 1 or 2 pages.','At the top: your name, phone, email, city, and a nice photo.','Write one line about you, for example: "Friendly, hard-working hospitality worker with X years at a resort. Fluent English. Skilled in guest service, cooking and maintenance."','List each job title at the resort with dates and 2 or 3 things you did.','Add your TESDA NC II, languages, and references.','Ask a friend to check spelling.'],
@@ -416,7 +422,7 @@ const STAGES = [
      time:'30 minutes'},
     {id:'peos', t:'Do the free PEOS online seminar',
      why:'The government requires it for first-time workers abroad. It teaches you your rights.',
-     how:[`Go to ${a(L.peos,'peos.dmw.gov.ph')} and make an account.`,'Use your name and birthday exactly as they are on your passport.','Watch the modules and finish the quiz. Save your certificate (take a screenshot).'],
+     how:[`Go to ${a(L.peos,'peos.dmw.gov.ph')}. First it asks you to make a free DMW e-Registration account.`,'Use your name and birthday exactly as they are on your passport.','Choose the track for skilled workers (not household workers).','Watch all the modules and finish the quiz. Save your certificate (screenshot it and email it to yourself).'],
      cost:'Free', time:'2 to 3 hours'},
     {id:'interview', t:'Practice for interviews',
      why:'Practice makes you calm and confident.',
@@ -432,11 +438,11 @@ const STAGES = [
      time:'5 minutes'},
     {id:'search', t:'Find 3 agencies hiring for my path',
      why:'Applying through more than one agency gives you more chances.',
-     how:[`Open ${a(L.jobs,'approved job orders')}. Search for job titles like "waiter," "room attendant," "commis," "cook," or "front desk."`,'Write each agency in the 📋 My jobs tab.','For cruise ships, look for "manning agencies." Big, well-known ones work with the major cruise lines.'],
+     how:[`Open ${a(L.jobs,'approved job orders')}. Search for job titles like "waiter," "room attendant," "commis," "cook," or "front desk."`,'You can also look at the careers pages of big hotel brands and cruise lines. Even if you find the job there, a DMW-licensed agency must still process your papers.','Write each agency in the 📋 My jobs tab.','For cruise ships, look for "manning agencies." These are the agencies for jobs at sea.'],
      time:'1 hour'},
     {id:'verify', t:'Check that each agency is real',
      why:'This one step stops most scams.',
-     how:[`Search the agency name on ${a(L.agencies,'the DMW list')}. The status must say "Valid."`,'If it says Suspended, Cancelled, Delisted, or Revoked, or it is not there: STOP.','A travel agency or "consultancy" is NOT a recruitment agency.','Tick the checks for each agency in the 📋 My jobs tab.'],
+     how:[`Search the agency name on ${a(L.agencies,'the DMW list')}. Its license must show as valid or active.`,'If it says Suspended, Cancelled, Delisted, or Revoked, or it is not there: STOP.','For cruise jobs, the agency must be listed as sea-based (manning), not land-based.','Check that the exact job is on the approved job orders list too.','A travel agency or "consultancy" is NOT allowed to recruit, even if it has a business permit.','If you are unsure, call DMW at +63 2 1348. Use the number from this app, not a number the recruiter gives you.','Tick the checks for each agency in the 📋 My jobs tab.'],
      time:'5 minutes each'},
     {id:'apply', t:'Apply to my first job',
      why:'You are ready! 🎉',
@@ -456,11 +462,11 @@ const STAGES = [
      time:'5 minutes'},
     {id:'contract', t:'Read the whole contract before signing',
      why:'The contract is your protection. What is not written does not count.',
-     how:['Find these in writing: monthly salary, hours per day, days off per week, overtime pay, free housing, free food, who pays the plane ticket home, and how long the contract is.','Compare the salary and job with the DMW job order. They must match.','Ask the agency to explain anything you don\'t understand. Take your time.','Take a photo of every page and send it to your trusted people.'],
+     how:['Find these in writing: monthly salary, hours per day, days off per week, overtime pay, free housing, free food, who pays the plane ticket there and home, and how long the contract is.','If something is "usually free" (like housing or food), make sure it is written in the contract. If it is not written, it is not promised.','Check what happens if you leave early. Often you must pay your own ticket home.','Compare the salary and job with the DMW job order. They must match.','Ask the agency to explain anything you don\'t understand. Take your time.','Take a photo of every page and send it to your trusted people.'],
      time:'1 hour'},
     {id:'fees', t:'Check the fees are legal',
      why:'Illegal fees are the most common way workers get trapped in debt.',
-     how:['Cruise ship jobs: NO placement fee is allowed.','Qatar and some other countries: NO placement fee is allowed.','Other jobs: the most an agency can charge is 1 month of your basic salary, and only after you sign the approved contract.','Always get an official receipt with the amount and date. No receipt = do not pay.','Never sign a paper saying you paid nothing when you did pay.','Never borrow from a lender the agency sends you to.'],
+     how:['NO placement fee is allowed for: cruise ship jobs, Japan SSW jobs, Korea EPS jobs, and Qatar. (Also the UK, Ireland, the Netherlands, Austria, Norway, Israel and some others.)','Other jobs: the most an agency can charge is 1 month of your basic salary, and only after you sign the approved contract.','A "processing fee," "training fee" or "service fee" that pays for the agency\'s work is still a placement fee. Different name, same rule.','The agency or employer must pay for your visa, work permit, and your required OFW insurance. These are not your costs.','Always get an official receipt with the amount and date. No receipt = do not pay.','Never sign a paper saying you paid nothing when you did pay.','Never borrow from a lender the agency sends you to.'],
      time:'15 minutes'},
     {id:'askworker', t:'Ask someone who already works there',
      why:'Workers tell the truth about food, rooms and bosses.',
@@ -476,31 +482,31 @@ const STAGES = [
    steps:[
     {id:'medical', t:'Do my medical exam',
      why:'Every country requires a health check.',
-     how:['Your agency will send you to a DOH-accredited clinic. For Gulf countries it is a GAMCA/Wafid clinic.','Ask the agency first who pays. Often the employer pays.','Results usually last about 3 months, so don\'t do it too early.'],
-     cost:'₱2,500 to ₱7,500 (ask who pays)', time:'1 to 3 days'},
+     how:['Only do the medical AFTER an agency has interviewed and picked you. Don\'t pay for one "just in case."','Your agency will send you to a DOH-accredited clinic. For Gulf countries it is a GAMCA/Wafid clinic.','Ask the agency for a "Letter of Authorization" (LOA). With an LOA, the agency or employer pays the clinic, not you.','If you must pay, keep the original receipt. You can ask for the money back.','Women are also given a pregnancy test.','Results only last a few months, so don\'t do it too early.'],
+     cost:'₱2,500 to ₱8,000 (ask for an LOA so you don\'t pay)', time:'1 to 3 days'},
     {id:'cruise', t:'Cruise only: training, seaman\'s book and US visa', tag:'Cruise only',
      why:'Every person working on a ship needs these.',
-     how:['Basic Safety Training (BST) at a MARINA-accredited school. Your manning agency will tell you where.',`Seafarer's Record Book (SRB) from MARINA: ${a(L.marina,'sidsrb.marina.gov.ph')}.`,'US C1/D crew visa interview (fee about US$185). Your agency helps book it.','Tip: US border officers can check crew phones. Keep your phone clean. Delete forwarded videos and pictures you did not make.'],
-     cost:'about ₱25,000 to ₱45,000 total', time:'1 to 2 months'},
+     how:['Wait until a manning agency has accepted you. Then ask them exactly which trainings you need, so you don\'t pay for the wrong ones.','Basic Safety Training (BST) at a MARINA-accredited school, about ₱5,000 to ₱10,000. Passenger ships also need Crowd and Crisis Management, and usually Security Awareness.',`Seafarer's Record Book (SRB, about ₱1,000) and Seafarer ID (SID, about ₱1,000) from MARINA. Book the appointment in the eGovPH app or at ${a(L.marina,'sidsrb.marina.gov.ph')}. Have every requirement ready first: fees are lost if you miss the date or forget a paper. Wear a collared shirt.`,'US C1/D crew visa (US$185 or more). By law, visa costs must NOT be charged to seafarers. Often you pay first and get it back on the ship, so keep the ORIGINAL receipt.','Budget for food and a place to stay in Manila during training.','Tip: US border officers search crew phones. People have been sent home and banned for 10 years over files in group chats. Leave group chats that forward videos. Delete any pictures or videos you did not make.'],
+     cost:'about ₱15,000 to ₱30,000, plus Manila living costs', time:'1 to 2 months'},
     {id:'pdos', t:'Attend PDOS (pre-departure seminar)',
      why:'Required. It teaches you about the country, your rights, and who to call.',
      how:[`OWWA runs it. Info: ${a(L.pdos,'OWWA PDOS page')}.`,'Your agency usually books it for you. Bring a notebook.'],
      cost:'Usually free', time:'1 day'},
     {id:'owwa', t:'Make sure my OWWA membership is paid',
      why:'OWWA helps you if you get sick, hurt, or stuck abroad.',
-     how:['It costs US$25 per contract. The law says the employer or agency should pay it.',`Check it at ${a(L.owwa,'membership.owwa.gov.ph')}.`,`Download the ${a(L.owwaApp,'OWWA Mobile App')}.`],
+     how:['It costs US$25 and lasts 2 years. For agency hires, the employer or agency should pay it.',`Check it at ${a(L.owwa,'membership.owwa.gov.ph')}.`,`Download the ${a(L.owwaApp,'OWWA Mobile App')}.`],
      cost:'US$25 (employer should pay)', time:'30 minutes'},
-    {id:'ofwpass', t:'Get my OFW Pass (exit permit)',
-     why:'You need it at the airport to leave as a legal worker.',
-     how:['Get it in the DMW Mobile App once your contract is processed.','Your agency will help. Take a screenshot of it.'],
-     cost:'Free', time:'1 day'},
+    {id:'ofwpass', t:'Get my OEC (exit clearance)',
+     why:'You need it at the airport to leave as a legal worker. It also makes you free from the travel tax and airport terminal fee.',
+     how:['For your first job abroad, your agency gets your OEC for you through DMW after your contract is approved.','Ask for a copy and keep it on your phone and on paper.','At the airport, show it to skip the travel tax. If you buy any ticket yourself, book it as an OFW.','Later, when you go back for a new contract, you can use the OFW Pass in the DMW Mobile App.','If anyone asks you to leave WITHOUT an OEC, or to say you are a tourist: STOP. That is illegal recruitment.'],
+     cost:'Free', time:'1 to 2 weeks (agency does it)'},
     {id:'bank', t:'Set up how I will send and save money',
      why:'Fees add up. A good plan saves you thousands of pesos.',
-     how:['Make sure your family has a bank account or GCash to receive money.','Compare fees between Wise, GCash, Remitly and your bank. Digital apps are usually cheapest.',`Open a Pag-IBIG MP2 savings account. It is government-backed and paid about 7% per year recently. Info: ${a(L.pagibig,'pagibigfund.gov.ph')}.`],
+     how:['Make sure your family has a bank account or GCash to receive money.','Compare fees between Wise, GCash, Remitly and your bank. Digital apps are usually cheapest.',`Open a Pag-IBIG MP2 savings account. It is government-backed. It paid 7.12% for 2025 (the rate changes every year). Minimum ₱500. Money stays in for 5 years. Info: ${a(L.pagibig,'pagibigfund.gov.ph')}.`,'Keep paying your Pag-IBIG and SSS while abroad. OFWs are required to be members, and they protect you and your family.'],
      time:'1 hour'},
     {id:'contacts', t:'Save emergency numbers in my phone',
      why:'In trouble, you won\'t have time to search.',
-     how:['DMW and OWWA hotline: +63 2 1348.','The Philippine Embassy and Migrant Workers Office (MWO) in your new country.','Your agency in the Philippines and your 2 trusted people.','Your secret code word with your family.'],
+     how:['DMW and OWWA hotline: +63 2 1348.','The Philippine Embassy and Migrant Workers Office (MWO) in your new country. (In the Maldives there is no Philippine embassy. The embassy in Dhaka, Bangladesh, helps, and there is an honorary consul in Malé.)','Your agency in the Philippines and your 2 trusted people.','Your secret code word with your family.'],
      time:'10 minutes'},
     {id:'passportrule', t:'Promise myself: I keep my own passport',
      why:'Taking a worker\'s passport is how bad employers trap people. In most countries it is illegal.',
@@ -536,7 +542,7 @@ const STAGES = [
      time:'1 evening'},
     {id:'reint', t:'Learn about OWWA help for returning workers',
      why:'The government has training and some small livelihood grants for returning OFWs.',
-     how:[`Read about the Balik-Pinas Balik-Hanapbuhay program: ${a(L.bpbh,'OWWA BPBH')}.`,'Ask OWWA about free business training before you start a business.'],
+     how:[`If you come home because you lost your job abroad, OWWA's Balik-Pinas Balik-Hanapbuhay program can give up to ₱20,000 to start a small business, plus training. Info: ${a(L.bpbh,'OWWA BPBH')}.`,'Keep your OWWA membership active. Most help is only for active members.','Ask OWWA about free business training before you start a business.'],
      time:'30 minutes'},
     {id:'celebrate', t:'Celebrate with my family! 🎉',
      why:'You did something brave and hard. Be proud.',
@@ -548,48 +554,56 @@ const STAGES = [
 const PATHS = [
  { id:'cruise', name:'Cruise ship (hotel jobs)', emoji:'🛳️', color:'#2a6fdb',
    short:'Waiter, cabin cleaner, cook, or kitchen helper on a big ship.',
-   pay:[1000,2000], costs:100, save:'US$800–1,800', up:'₱25k–45k', upPHP:35000, time:'3–6 months', safety:4, fee:'No placement fee allowed',
-   free:'Room, all food, uniforms. Flights usually paid.',
-   good:['Uses all your skills: guest service, food, cleaning, maintenance.','Almost no living costs, so you save the most.','Many Filipinos do this. Lots of support.'],
-   watch:['Very long days (10–13 hours), 7 days a week.','6–10 months at sea, then 1–3 months home without pay.','US border officers can check crew phones. Keep your phone clean.'],
-   start:['Get the TESDA NC II for food service or housekeeping.','Find a DMW-licensed manning agency for a big cruise line.','Make your video introduction.'] },
+   pay:[900,2000], costs:100, save:'US$700–1,700', up:'₱15k–30k', upPHP:25000, time:'3–6 months', safety:4, fee:'No placement fee allowed (by law)',
+   free:'Shared cabin, all food, uniforms. Flights there and home are paid if you finish your contract.',
+   good:['Uses all your skills: guest service, food, cleaning, maintenance.','Almost no living costs, so you can save a lot.','Many Filipinos do this, so there is lots of support.'],
+   watch:['Very long days (about 10–13 hours), 7 days a week, no full days off.','Much of the pay is tips. Tips are not guaranteed and change by ship and season.','6–10 months at sea, then 1–3 months home with no pay.','Many lines want you to be at least 21. Visible tattoos can be a problem. Ask the agency.','US border officers search crew phones. People have been banned for 10 years over videos from group chats. Keep your phone clean.'],
+   start:['Get the TESDA NC II for food service or housekeeping.','Find a DMW-licensed manning (sea-based) agency that hires for a big cruise line.','Make your video introduction.','Only pay for safety trainings AFTER an agency accepts you.'] },
  { id:'maldives', name:'Maldives resort', emoji:'🏝️', color:'#0e9aa7',
    short:'Work at a beach resort, like at home, but with more pay.',
-   pay:[600,1500], costs:80, save:'US$400–1,100', up:'₱5k–15k', upPHP:10000, time:'1–3 months', safety:4, fee:'Ask: often low or none',
-   free:'Staff room, all meals, usually a yearly flight home.',
-   good:['Very close to the work you already do.','Big "service charge" bonus on top of base pay at good resorts.','Low cost to get there.'],
-   watch:['Pay changes by resort and season. Base pay can be low.','Small islands: quiet life, far from shops.','Only go with a work visa, never a "visit visa first."'],
+   pay:[600,1500], costs:80, save:'US$400–1,100', up:'₱5k–15k', upPHP:10000, time:'1–3 months', safety:4, fee:'Max 1 month salary. Never pay a Maldives recruiter.',
+   free:'Usually a shared staff room, all meals, and a yearly ticket home. Get these written in your contract.',
+   good:['Very close to the work you already do.','A "service charge" bonus on top of base pay can be big at good resorts.','Low cost to get there. The employer pays the work permit.'],
+   watch:['There is no minimum wage for foreign workers. Base pay can be low.','The service charge goes up and down with the season, and some resorts pay it in local money (rufiyaa), not dollars.','Small islands: quiet life, far from shops, rules about leaving the island.','No Philippine embassy in the Maldives. The embassy in Dhaka, Bangladesh, covers it.','Only go with a work visa. Never "go on a visit visa first."'],
    start:['Look at career pages of big hotel brands with Maldives resorts.','Ask DMW-licensed agencies for Maldives job orders.','Highlight your resort experience in your CV.'] },
- { id:'gulf', name:'Hotel in Qatar, UAE or Saudi', emoji:'🏙️', color:'#c77d1a',
-   short:'Waiter, housekeeping, kitchen, front desk, or maintenance in a city hotel.',
-   pay:[400,1000], costs:80, save:'US$300–700', up:'₱6k–18k', upPHP:12000, time:'2–4 months', safety:3, fee:'Qatar: no fee allowed',
-   free:'Usually shared room, meals at work, bus to work.',
-   good:['Many jobs and many Filipinos already there.','Big hotel brands treat workers better.','Front desk and maintenance jobs can pay more.'],
-   watch:['Only work for big, famous hotel brands. Avoid small "manpower supply" companies.','Some bosses illegally keep passports.','Very hot summers, especially for outdoor maintenance.'],
-   start:['Get the TESDA NC II that matches the job.','Search DMW job orders for hotel brands you know.','Read the 🛡️ Safety rules twice.'] },
+ { id:'usa', name:'USA seasonal resort (H-2B)', emoji:'🏔️', color:'#3d7a3a',
+   short:'Housekeeping, cooking or maintenance at lodges near national parks and ski resorts, for one season.',
+   pay:[2800,3800], costs:1200, save:'US$1,500–2,500', up:'₱10k–25k', upPHP:20000, time:'6–9 months (aim for summer 2027)', safety:4, fee:'No placement fee allowed (US and Philippine law)',
+   free:'Not free: staff dorm and meals cost about US$100–200 per week. Visa and travel costs must be paid back by the employer.',
+   good:['High pay: about US$16–26 per hour.','Strong US worker protections. The employer must pay back your visa fee and flight.','Real resort work, close to what you do now.'],
+   watch:['Only one season (about 5–9 months), not 1–3 years. You come home after each season.','Very hard to get: there are limited visas, often decided by lottery. Winter 2026–27 is already full.','The big national park companies mostly hire Americans and students. Look at smaller lodges and resorts near the parks.','You must pass an in-person interview at the US Embassy in Manila and show you will come home.','The "J-1 Summer Work Travel" visa is only for students. Don\'t pay anyone who offers it to you.'],
+   start:['Look at real US job orders on seasonaljobs.dol.gov (search housekeeper, cook, maintenance; states like Montana, Wyoming, Colorado, Alaska).','Find a DMW-licensed agency that handles US H-2B jobs, or apply to the employer and have an agency process your papers.','Apply in the winter for jobs starting April to June.'] },
  { id:'japan', name:'Japan hotel (SSW visa)', emoji:'🗾', color:'#d1495b',
    short:'Hotel work in Japan with a government program. Very safe.',
-   pay:[1200,1550], costs:650, save:'US$400–800', up:'₱12k–35k', upPHP:25000, time:'6–12 months', safety:5, fee:'Must use a DMW-licensed agency',
-   free:'Housing is often helped, but not free. Taxes and insurance are taken out.',
-   good:['Strong worker protections. Very safe.','You can stay up to 5 years and maybe longer.','Hotels in Japan respect good service.'],
-   watch:['You must learn basic Japanese first (level N4 or JFT-Basic). Plan 6–12 months.','Restaurant ("food service") visas stopped in April 2026. Hotel ("accommodation") jobs are still open.','Japan is expensive, so you save less than the pay looks.'],
-   start:['Start free Japanese lessons on your phone today.','Look for the JFT-Basic test and the hotel skills test in the Philippines.','Find a DMW-licensed agency for Japan SSW hotel jobs.'] },
+   pay:[1200,1550], costs:650, save:'US$400–800', up:'₱12k–35k', upPHP:25000, time:'6–12 months', safety:5, fee:'No placement fee allowed',
+   free:'Employer must help you find housing, but rent is usually taken from pay. Taxes and insurance are taken too.',
+   good:['Strong worker protections. Very safe.','You can stay up to 5 years. With a higher test later, hotel workers can stay longer and bring family.','Hotels in Japan respect good service.'],
+   watch:['You must learn basic Japanese first (JFT-Basic or JLPT N4). Plan 6–12 months.','Restaurant ("food service") visas closed in April 2026 with 2 weeks\' notice. Hotel ("accommodation") jobs are still open but could fill up around 2027.','Take-home pay is about 70% of the salary after rent, tax and insurance.','Test fees (about ₱2,000 for Japanese, ₱2,800 for the hotel test) are not refunded if you miss the test.'],
+   start:['Start free Japanese lessons on your phone today.','Book the JFT-Basic and the hotel skills test with Prometric. They are held in Manila, Cebu and Davao.','Find a DMW-licensed agency with Japan SSW hotel job orders.'] },
  { id:'korea', name:'South Korea (EPS program)', emoji:'🇰🇷', color:'#5b4bb7',
    short:'Government program. Good pay, but mostly factory or farm work.',
-   pay:[1550,2200], costs:600, save:'US$800–1,300', up:'₱10k–20k', upPHP:15000, time:'8–18 months', safety:4, fee:'Run by governments, low cost',
-   free:'Housing often given, but some cost can be taken from pay.',
-   good:['High pay and a 3-year contract.','Run by the Korean and Philippine governments.'],
-   watch:['Mostly factory and farm jobs, not hotels.','You must pass a Korean language test (EPS-TOPIK).','Do NOT confuse with the "seasonal worker" farm program through towns (E-8). That one has had many abuse cases.'],
-   start:['Learn about the EPS-TOPIK test dates from DMW.','Start learning Korean basics on your phone.'] }
+   pay:[1550,2200], costs:600, save:'US$800–1,300', up:'₱10k–20k', upPHP:15000, time:'8–18 months', safety:4, fee:'Government program, no placement fee',
+   free:'Housing often given, but part of the cost can be taken from pay.',
+   good:['High pay (minimum wage in 2026 is about US$1,550 per month) and a 3-year contract.','Run by the Korean and Philippine governments.'],
+   watch:['Mostly factory and farm jobs. Hotel and restaurant spots are very few.','Age limit is about 18 to 39. Check the exact rule with DMW.','You must pass a Korean test (EPS-TOPIK). Passing does not guarantee an employer picks you.','Do NOT confuse it with the "seasonal worker" farm program through town halls (E-8). That one has had many abuse cases.'],
+   start:['Watch the DMW website and Facebook page for EPS-TOPIK test dates.','Start learning Korean basics on your phone.'] },
+ { id:'gulf', name:'Hotel in Qatar, UAE or Saudi', emoji:'🏙️', color:'#c77d1a', hold:true,
+   short:'Waiter, housekeeping, kitchen, front desk, or maintenance in a city hotel.',
+   pay:[400,1000], costs:80, save:'US$300–700', up:'₱6k–18k', upPHP:12000, time:'2–4 months (when open)', safety:2, fee:'Qatar: no fee. UAE & Saudi law also ban it.',
+   free:'Big hotels usually give a shared room, meals at work, and a bus to work. Get it in writing.',
+   good:['Many jobs and many Filipinos already there.','Big hotel brands treat workers better.','Front desk and maintenance jobs can pay more.'],
+   watch:['Because of the war in the region in 2026, DMW stopped sending new workers to the Gulf. Some countries may reopen, but rules are changing. Call 1348 before you spend any money.','Pay is lower than it sounds. In Qatar the legal minimum is only QAR 1,000 (about US$275) if housing and food are given.','Only work for big, famous hotel brands. Avoid small "manpower supply" companies.','Some bosses illegally keep passports. Very hot summers.','Kuwait only takes workers who have worked abroad before.'],
+   start:['First, check with DMW (call 1348) if deployment is open again.','Get the TESDA NC II that matches the job.','Search DMW job orders for hotel brands you know.'] }
 ];
 
 const AVOID = [
  '<b>Domestic helper (live-in maid) jobs.</b> You live in the boss\'s home with little protection. This has the most abuse cases.',
- '<b>Korea "seasonal worker" farm jobs through a town hall (E-8).</b> Many workers had passports taken and pay stolen.',
- '<b>Any job on a tourist visa.</b> This is illegal and leaves you with no protection.',
- '<b>"Online job" offers in Cambodia, Myanmar or Laos.</b> Many are scam centers that trap workers.',
+ '<b>Korea "seasonal worker" farm jobs through a town hall or broker (E-8).</b> Many workers had passports taken and pay stolen.',
+ '<b>Any job on a tourist or visit visa.</b> This is illegal and leaves you with no protection.',
+ '<b>"Online job" or "customer service" offers in Cambodia, Myanmar or Laos.</b> Many are scam centers that trap workers.',
  '<b>Europe, Canada, New Zealand or Australia offers from a "consultancy" that wants big fees.</b> Real jobs there are rare for this kind of work, and fake ones are common.',
- '<b>Anyone who asks for money on Facebook, Messenger or WhatsApp before you have a contract.</b>'
+ '<b>"J-1" US visa offers if you are not a student,</b> or anyone promising a "guaranteed US visa."',
+ '<b>Anyone who asks for money on Facebook, Messenger, Telegram or WhatsApp before you have a contract.</b>'
 ];
 
 const RULES = [
@@ -608,15 +622,15 @@ const QUIZ = [
  {q:'Did they ask you to pay through Messenger, GCash to a person, or with no receipt?', good:'no'},
  {q:'Did they tell you to travel on a tourist visa?', good:'no'},
  {q:'Is the salary, hours, days off, housing and food written in the contract?', good:'yes'},
- {q:'Is the fee one month of salary or less (or zero for cruise jobs and Qatar)?', good:'yes'},
+ {q:'Is the fee one month of salary or less? (It must be ZERO for cruise ships, Japan, Korea EPS, USA H-2B and Qatar.)', good:'yes'},
+ {q:'Is it the same job and salary as the DMW job order?', good:'yes'},
  {q:'Did they ask you to keep it secret or decide very fast?', good:'no'}
 ];
 
 const CALLS = [
- {ic:'☎️', n:'DMW + OWWA hotline (24/7)', d:'From the Philippines: 1348', tel:'1348'},
- {ic:'🌍', n:'DMW + OWWA from abroad', d:'+63 2 1348', tel:'+6321348'},
+ {ic:'☎️', n:'DMW + OWWA hotline (24/7)', d:'+63 2 1348 · works from any phone, here or abroad', tel:'+6321348'},
  {ic:'🚨', n:'Report illegal recruiters (DMW)', d:'(02) 8721-0619 · mwpb@dmw.gov.ph', tel:'+63287210619'},
- {ic:'🛑', n:'Anti-trafficking 1343 Actionline', d:'1343 in Metro Manila · (02) 1343 from mobiles', tel:'+6321343'}
+ {ic:'🛑', n:'Anti-trafficking 1343 Actionline (24/7)', d:'1343 in Metro Manila · (02) 1343 outside Metro Manila', tel:'+6321343'}
 ];
 
 const SOS = [
@@ -626,6 +640,19 @@ const SOS = [
  'Message your 2 trusted people. Use your secret code word if you can\'t talk freely.',
  'Keep your payslips, contract photos and messages. They are your proof.',
  'Never run away into hiding without first contacting the MWO. They can move you to a safe place.'
+];
+
+const SURPRISES = [
+ ['💸','You may pay some costs first and get them back later.','Keep every ORIGINAL receipt (visa, medical, travel). No receipt usually means no refund.'],
+ ['📄','A different contract may appear at the airport or when you arrive.','Don\'t sign a worse one. Call 1348 or the MWO. Your DMW-approved contract is the one that counts.'],
+ ['🧾','Take-home pay is less than the salary.','Tax, insurance, rent and food can take 20–30% in Japan, Korea and the USA.'],
+ ['🎲','Tips and service charges are not guaranteed.','On ships and at resorts they change with the season and the number of guests.'],
+ ['⏸️','Rules can change overnight.','In 2026 Japan closed restaurant visas with 2 weeks\' notice, and the Gulf was closed because of war. Check with DMW before spending money.'],
+ ['✈️','Leaving early can cost you a lot.','You may have to pay your own ticket home and lose bonuses. Talk to the MWO before quitting.'],
+ ['📝','Missed exams are not refunded.','Only book tests on a day you are sure you can go.'],
+ ['🏦','Loan offers from "partners" of the agency.','These can trap you in debt. Say no.'],
+ ['👪','Family may ask for more money.','Stick to the plan you made together. Your savings are for your family\'s future too.'],
+ ['💙','Homesickness is strongest in the first 2–4 months.','Plan regular calls, find good friends, and remember why you went. It gets easier.']
 ];
 
 const LEVELS = ['Dreamer','Planner','Paper Pro','Star Applicant','Job Hunter','Smart Signer','Ready to Fly','Strong Saver','Champion'];
@@ -742,6 +769,7 @@ function renderPaths(){
         <h3>${esc(p.name)}</h3><p>${esc(p.short)}</p>
       </div>
       <div class="path-body">
+        ${p.hold?`<div class="warnbox" style="margin-bottom:12px">⏸️ <b>On hold right now.</b> New workers were stopped from going to the Gulf in 2026 because of the war in the region. Call DMW at +63 2 1348 to ask if it has reopened before you spend any money.</div>`:''}
         <div class="nums">
           <div class="num big"><small>You could save per month</small><b>${esc(p.save)}</b><div style="font-size:14px;font-weight:700;color:#14693f">about ${peso(parseInt(p.save.match(/\d[\d,]*/)[0].replace(',',''))*rate)} or more</div></div>
           <div class="num"><small>Pay per month</small><b>US$${p.pay[0].toLocaleString()}–${p.pay[1].toLocaleString()}</b></div>
@@ -770,7 +798,7 @@ $('#pathList').addEventListener('click', e=>{
 /* ============ MONEY ============ */
 function setMoneyPath(id, fill){
   S.money.path=id; const p=PATHS.find(x=>x.id===id);
-  if(fill && p){ S.money.pay = Math.round((p.pay[0]+p.pay[1])/2); S.money.cost = p.costs; S.money.up = p.upPHP; }
+  if(fill && p){ S.money.pay = Math.round((p.pay[0]+p.pay[1])/2); S.money.cost = p.costs; S.money.up = p.upPHP; S.money.months = p.id==='usa' ? 6 : 18; }
   save(); renderMoney();
 }
 function renderMoney(){
@@ -821,6 +849,7 @@ $('#mPath').addEventListener('click', e=>{ const b=e.target.closest('[data-mp]')
 function renderSafety(){
   $('#rules').innerHTML = RULES.map((r,i)=>`<div class="rule"><div class="n">${i+1}</div><div><b>${esc(r[0])}</b><div style="color:var(--ink-2);font-size:15px">${esc(r[1])}</div></div></div>`).join('');
   $('#calls').innerHTML = CALLS.map(c=>`<a class="call" href="tel:${c.tel}"><div class="ic">${c.ic}</div><div><b>${esc(c.n)}</b><span>${esc(c.d)}</span></div></a>`).join('');
+  $('#surprises').innerHTML = SURPRISES.map(s=>`<div class="rule"><div class="n" style="background:var(--sun-l);font-size:18px">${s[0]}</div><div><b>${esc(s[1])}</b><div style="color:var(--ink-2);font-size:15px">${esc(s[2])}</div></div></div>`).join('');
   $('#sos').innerHTML = SOS.map(s=>`<li style="margin-bottom:8px">${esc(s)}</li>`).join('');
   renderQuiz();
 }
