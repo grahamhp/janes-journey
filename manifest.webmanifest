@@ -1,0 +1,15 @@
+{
+  "name": "Jane's Journey",
+  "short_name": "My Journey",
+  "description": "Step-by-step plan to work abroad safely and save money.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff8ef",
+  "theme_color": "#0e7c86",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
