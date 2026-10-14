@@ -2,7 +2,8 @@
 
 A phone-first, step-by-step guide for working abroad safely, saving money, and coming home strong.
 
-- **Journey**: 8 stages, 42 steps with checkboxes, points, levels and badges
+- **Journey**: 8 stages, 43 steps with checkboxes, points, levels and badges
+- **Fit check**: 11 private questions (age, experience, preferences) that hide paths that don't fit
 - **Paths**: cruise ships, Maldives resorts, US seasonal H-2B, Japan SSW (hotel), Korea EPS, Gulf hotels (on hold), plus paths to avoid
 - **My jobs**: track agencies and applications, with DMW checks for each
 - **Money**: savings calculator that subtracts living costs, start-up costs and money sent home

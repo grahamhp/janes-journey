@@ -202,6 +202,14 @@ nav.tabs button.on .ti{filter:none;opacity:1;transform:translateY(-2px)}
 .badge{width:62px;text-align:center;font-size:11px;font-weight:800;color:var(--ink-2)}
 .badge .b{width:52px;height:52px;margin:0 auto 3px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:#eee;filter:grayscale(1);opacity:.45}
 .badge.got .b{background:var(--sun);filter:none;opacity:1;box-shadow:0 3px 0 #d39f2a}
+.qopt{display:block;width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:14px;padding:14px 16px;font-weight:800;font-size:17px;margin-bottom:10px;cursor:pointer;min-height:54px}
+.qopt:active,.qopt.on{border-color:var(--sea);background:var(--sea-l)}
+.fitnote{border-radius:14px;padding:10px 12px;font-weight:700;font-size:15px;margin-bottom:12px}
+.fitnote.good{background:var(--leaf-l);color:#14693f}
+.fitnote.maybe{background:var(--sun-l);color:#7a5000}
+.fitnote ul{margin:6px 0 0;padding-left:18px;font-weight:600}
+details.nofit summary{cursor:pointer;font-weight:900;font-size:17px;list-style:none}
+details.nofit summary::-webkit-details-marker{display:none}
 .foot{font-size:13px;color:var(--ink-2);text-align:center;padding:10px 6px 20px}
 </style>
 </head>
@@ -242,6 +250,7 @@ nav.tabs button.on .ti{filter:none;opacity:1;transform:translateY(-2px)}
     <h2 class="h2">Where could I work? 🌏</h2>
     <p class="sub">These are the best fits for your resort, cooking and maintenance skills, from best to least good right now. Numbers are typical, not promises. Your real contract decides. Tap ⭐ on your top 2 or 3.</p>
     <p class="sub" style="font-size:14px;margin-top:-6px">🗓️ Checked 13 October 2026.</p>
+    <div id="fitBox"></div>
     <div id="pathList"></div>
     <div class="card avoid">
       <h3 style="font-size:20px;margin-bottom:6px">🚫 Paths to avoid</h3>
@@ -352,6 +361,10 @@ const STAGES = [
  { id:'plan', ico:'🌱', title:'Make your plan', badge:'Planner',
    intro:'Before anything else, decide what you want and talk with your family. A clear goal keeps you strong when things get hard.',
    steps:[
+    {id:'fit', t:'Check which jobs fit me',
+     why:'Some jobs have age limits and other rules. This quick check hides the ones that don\'t fit you, so you don\'t waste time or money.',
+     how:['Answer 11 quick questions. Your answers stay only on this phone.','<button class="btn small" data-openfit>Start the check</button>','You can change your answers anytime from the 🌏 Paths tab.'],
+     time:'2 minutes'},
     {id:'goal', t:'Set my money goal',
      why:'Working abroad is a big sacrifice. A clear goal tells you if a job is worth it.',
      how:['Ask yourself: how much does my family need each month?','Ask: how much do I want to bring home at the end? (For example, to build a house, start a small business, or pay school fees.)','Go to the 💰 Money tab and try different jobs. See which ones reach your goal.'],
@@ -370,7 +383,7 @@ const STAGES = [
      time:'10 minutes'},
     {id:'trusted', t:'Choose 2 people I trust to follow my journey',
      why:'If something goes wrong, someone outside needs to know where you are and who your agency is.',
-     how:['Pick 2 people, for example a family member and a friend like Graham.','Tell them your plans. Later, send them photos of your passport, contract and agency details.'],
+     how:['Pick 2 people, for example a family member and a close friend.','Tell them your plans. Later, send them photos of your passport, contract and agency details.'],
      time:'5 minutes'}
    ]},
  { id:'papers', ico:'📄', title:'Get your papers', badge:'Paper Pro',
@@ -484,7 +497,7 @@ const STAGES = [
      why:'Every country requires a health check.',
      how:['Only do the medical AFTER an agency has interviewed and picked you. Don\'t pay for one "just in case."','Your agency will send you to a DOH-accredited clinic. For Gulf countries it is a GAMCA/Wafid clinic.','Ask the agency for a "Letter of Authorization" (LOA). With an LOA, the agency or employer pays the clinic, not you.','If you must pay, keep the original receipt. You can ask for the money back.','Women are also given a pregnancy test.','Results only last a few months, so don\'t do it too early.'],
      cost:'₱2,500 to ₱8,000 (ask for an LOA so you don\'t pay)', time:'1 to 3 days'},
-    {id:'cruise', t:'Cruise only: training, seaman\'s book and US visa', tag:'Cruise only',
+    {id:'cruise', only:'cruise', t:'Cruise only: training, seaman\'s book and US visa', tag:'Cruise only',
      why:'Every person working on a ship needs these.',
      how:['Wait until a manning agency has accepted you. Then ask them exactly which trainings you need, so you don\'t pay for the wrong ones.','Basic Safety Training (BST) at a MARINA-accredited school, about ₱5,000 to ₱10,000. Passenger ships also need Crowd and Crisis Management, and usually Security Awareness.',`Seafarer's Record Book (SRB, about ₱1,000) and Seafarer ID (SID, about ₱1,000) from MARINA. Book the appointment in the eGovPH app or at ${a(L.marina,'sidsrb.marina.gov.ph')}. Have every requirement ready first: fees are lost if you miss the date or forget a paper. Wear a collared shirt.`,'US C1/D crew visa (US$185 or more). By law, visa costs must NOT be charged to seafarers. Often you pay first and get it back on the ship, so keep the ORIGINAL receipt.','Budget for food and a place to stay in Manila during training.','Tip: US border officers search crew phones. People have been sent home and banned for 10 years over files in group chats. Leave group chats that forward videos. Delete any pictures or videos you did not make.'],
      cost:'about ₱15,000 to ₱30,000, plus Manila living costs', time:'1 to 2 months'},
@@ -671,7 +684,9 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const peso = n => '₱' + Math.round(n).toLocaleString('en-US');
-const allSteps = () => STAGES.flatMap(s => s.steps.map(t => ({...t, stage:s.id})));
+const stepVisible = s => !s.only || fitOf(s.only).level !== 'no';
+const stageSteps = st => st.steps.filter(stepVisible);
+const allSteps = () => STAGES.flatMap(s => stageSteps(s).map(t => ({...t, stage:s.id})));
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('on'),2200); }
 function confetti(){
   const cols=['#ff6f59','#ffc857','#23a566','#0e7c86','#5b4bb7'];
@@ -689,7 +704,7 @@ const CHEERS = ['Great job! 🎉','You\'re doing it! 💪','One step closer! ✨
 function renderHeader(){
   const steps = allSteps(); const n = steps.filter(s=>S.done[s.id]).length;
   const pct = Math.round(n/steps.length*100);
-  const stagesDone = STAGES.filter(st => st.steps.every(s=>S.done[s.id])).length;
+  const stagesDone = STAGES.filter(st => stageSteps(st).every(s=>S.done[s.id])).length;
   $('#lvlName').textContent = `Level ${stagesDone+1} · ${LEVELS[Math.min(stagesDone, LEVELS.length-1)]}`;
   $('#lvlPts').textContent = `${n*10} points · ${pct}%`;
   $('#lvlBar').style.width = pct+'%';
@@ -708,7 +723,7 @@ function renderNext(){
 }
 function renderStages(){
   $('#stages').innerHTML = STAGES.map(st=>{
-    const n = st.steps.filter(s=>S.done[s.id]).length, tot = st.steps.length, done = n===tot;
+    const n = stageSteps(st).filter(s=>S.done[s.id]).length, tot = stageSteps(st).length, done = n===tot;
     return `<div class="card stage ${done?'done':''} ${S.open===st.id?'open':''}" data-stage="${st.id}">
       <button class="stage-head" data-toggle="${st.id}">
         <div class="stage-ico">${done?'✅':st.ico}</div>
@@ -717,7 +732,7 @@ function renderStages(){
       </button>
       <div class="stage-body">
         <p class="stage-intro">${esc(st.intro)}</p>
-        ${st.steps.map(s=>`
+        ${stageSteps(st).map(s=>`
           <div class="step ${S.done[s.id]?'done':''}" data-step="${s.id}">
             <div class="step-row">
               <button class="check" data-check="${s.id}" aria-label="Mark done: ${esc(s.t)}">${S.done[s.id]?'✓':''}</button>
@@ -736,7 +751,7 @@ function renderStages(){
 }
 function renderBadges(){
   $('#badges').innerHTML = STAGES.map(st=>{
-    const got = st.steps.every(s=>S.done[s.id]);
+    const got = stageSteps(st).every(s=>S.done[s.id]);
     return `<div class="badge ${got?'got':''}"><div class="b">${st.ico}</div>${esc(st.badge)}</div>`;
   }).join('');
 }
@@ -749,7 +764,7 @@ $('#stages').addEventListener('click', e=>{
     if(was) delete S.done[id]; else S.done[id] = Date.now();
     save();
     const st = STAGES.find(s=>s.steps.some(x=>x.id===id));
-    const nowDone = st.steps.every(s=>S.done[s.id]);
+    const nowDone = stageSteps(st).every(s=>S.done[s.id]);
     renderAll();
     if(!was){
       if(nowDone){ confetti(); toast(`🏅 New badge: ${st.badge}!`); }
@@ -758,10 +773,148 @@ $('#stages').addEventListener('click', e=>{
   }
 });
 
+/* ============ FIT CHECK ============ */
+const FITQ = [
+ {k:'name', q:'What\'s your first name?', type:'text', ph:'Your name'},
+ {k:'age', q:'How old are you?', type:'number', ph:'Age in years'},
+ {k:'edu', q:'What is the highest school you finished?', opts:[['elem','Elementary'],['hs','High school'],['voc','Vocational or some college'],['college','College degree']]},
+ {k:'exp', q:'How many years have you worked in hotels, resorts or restaurants?', opts:[['0','None yet'],['lt1','Less than 1 year'],['1to2','1 to 2 years'],['3plus','3 years or more']]},
+ {k:'ship', q:'Could you live and work on a ship for 6 to 10 months at a time?', opts:[['yes','Yes'],['maybe','Not sure'],['no','No']]},
+ {k:'lang', q:'Would you study Japanese or Korean for 6 to 12 months to get a job there?', opts:[['yes','Yes'],['maybe','Maybe'],['no','No']]},
+ {k:'factory', q:'Would you do factory or farm work?', opts:[['yes','Yes'],['maybe','Maybe'],['no','No']]},
+ {k:'short', q:'Is a short job (5 to 9 months), then coming home, OK for you?', opts:[['yes','Yes, that\'s OK'],['no','No, I want 1 to 3 years']]},
+ {k:'soon', q:'How soon do you need to start working abroad?', opts:[['3','Within 3 months'],['6','Within 6 months'],['12','I can wait up to a year for a better job']]},
+ {k:'tattoo', q:'Do you have tattoos that would show in a short-sleeve uniform?', opts:[['no','No'],['yes','Yes']]},
+ {k:'overstay', q:'Have you ever overstayed a visa, or worked abroad without the right visa?', sub:'If you have never been abroad, choose No. Your answer stays on this phone.', opts:[['no','No'],['yes','Yes']]}
+];
+
+function fitOf(id){
+  const P = S.profile;
+  if(!P || !P.done) return {level:'unknown', why:[]};
+  const age = +P.age || 0, no = [], maybe = [];
+  let hold = false;
+  if(age && age < 18) no.push('You must be at least 18 to work abroad legally.');
+  switch(id){
+    case 'cruise':
+      if(P.ship==='no') no.push('You said you don\'t want to live on a ship.');
+      if(P.ship==='maybe') maybe.push('Life at sea is hard: 6–10 months on board, with no full days off.');
+      if(age>=18 && age<21) maybe.push('Many cruise lines want you to be at least 21.');
+      if(P.edu==='elem') maybe.push('Most cruise lines want you to have finished high school.');
+      if(P.exp==='0' || P.exp==='lt1') maybe.push('Most cruise jobs want at least 1 year of hotel or restaurant experience.');
+      if(P.tattoo==='yes') maybe.push('Some cruise lines don\'t allow tattoos that show. Ask the agency.');
+      if(P.soon==='3') maybe.push('It usually takes 3 to 6 months to get on a ship.');
+      if(P.overstay==='yes') maybe.push('Most ships stop in the USA, so you need a US crew visa. A past overstay can make that hard.');
+      break;
+    case 'maldives':
+      if(P.exp==='0') maybe.push('Resorts usually want 1 to 2 years of resort or hotel experience.');
+      break;
+    case 'usa':
+      if(P.overstay==='yes') no.push('A past overstay or illegal work makes a US visa very unlikely.');
+      if(P.short==='no') maybe.push('It is one season at a time (5–9 months). Some employers invite good workers back for more seasons.');
+      if(P.soon!=='12') maybe.push('The earliest realistic start is spring or summer 2027.');
+      if(P.exp==='0') maybe.push('Employers prefer some hotel or restaurant experience.');
+      break;
+    case 'japan':
+      if(P.lang==='no') no.push('You need to study Japanese for 6–12 months first.');
+      if(P.lang==='maybe') maybe.push('You must pass a Japanese test (JFT-Basic or JLPT N4).');
+      if(P.soon==='3') no.push('Getting ready takes 6 to 12 months (language and skills tests).');
+      else if(P.soon==='6') maybe.push('Getting ready usually takes 6 to 12 months.');
+      if(P.overstay==='yes') maybe.push('If you were ever deported from Japan, you can\'t apply.');
+      break;
+    case 'korea':
+      if(age > 39) no.push('The age limit is about 18 to 39.');
+      else if(age >= 38) maybe.push('Some rounds only accept up to age 38. Check with DMW.');
+      if(P.lang==='no') no.push('You must pass a Korean language test (EPS-TOPIK).');
+      if(P.lang==='maybe') maybe.push('You must pass a Korean language test (EPS-TOPIK).');
+      if(P.factory==='no') no.push('Almost all jobs are factory or farm work.');
+      if(P.factory==='maybe') maybe.push('Almost all jobs are factory or farm work.');
+      if(P.soon==='3') no.push('It usually takes 8 to 18 months.');
+      else if(P.soon==='6') maybe.push('It usually takes 8 to 18 months.');
+      if(P.overstay==='yes') maybe.push('If you ever stayed illegally in Korea, you cannot apply.');
+      break;
+    case 'gulf':
+      hold = true;
+      maybe.push('On hold right now because of the war in the region. Call 1348 to check before spending money.');
+      break;
+  }
+  return {level: no.length ? 'no' : (maybe.length || hold) ? 'maybe' : 'good', why: no.length ? no : maybe};
+}
+
+let fitDraft = null, fitIdx = 0;
+function openFit(){
+  fitDraft = Object.assign({name: S.name || ''}, S.profile || {});
+  fitIdx = 0; showFitQ();
+}
+function showFitQ(){
+  const q = FITQ[fitIdx], v = fitDraft[q.k];
+  const pct = Math.round(fitIdx / FITQ.length * 100);
+  let body;
+  if(q.opts){
+    body = q.opts.map(([val,lab])=>`<button class="qopt ${v===val?'on':''}" data-qv="${val}">${esc(lab)}</button>`).join('');
+  } else {
+    body = `<input class="i" id="fitIn" type="${q.type}" ${q.type==='number'?'inputmode="numeric" min="0" max="99"':''} placeholder="${esc(q.ph)}" value="${esc(v)}">
+      <button class="btn block" id="fitNext" style="margin-top:12px">Next ›</button>`;
+  }
+  openSheet(`<div style="display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:14px;color:var(--ink-2)">
+      <span>Question ${fitIdx+1} of ${FITQ.length}</span><span>🔒 Stays on this phone</span></div>
+    <div class="bar" style="background:#f1e8db;margin:8px 0 16px"><i style="width:${pct}%"></i></div>
+    <h2>${esc(q.q)}</h2>${q.sub?`<p class="sub">${esc(q.sub)}</p>`:'<div style="height:8px"></div>'}
+    ${body}
+    <div style="display:flex;gap:10px;margin-top:14px">
+      ${fitIdx>0?'<button class="btn ghost" id="fitBack" style="flex:1">‹ Back</button>':''}
+      <button class="btn ghost" id="fitLater" style="flex:1">Later</button>
+    </div>`);
+  const next = () => { fitIdx++; if(fitIdx >= FITQ.length) finishFit(); else showFitQ(); };
+  document.querySelectorAll('[data-qv]').forEach(b => b.onclick = () => { fitDraft[q.k] = b.dataset.qv; next(); });
+  const inp = $('#fitIn');
+  if(inp){
+    setTimeout(()=>{ try{ inp.focus(); }catch(e){} }, 250);
+    const go = () => {
+      const val = inp.value.trim();
+      if(q.k==='age' && (!val || +val < 10 || +val > 90)){ toast('Please type your age in numbers'); return; }
+      if(q.k==='name' && !val){ toast('Please type your name'); return; }
+      fitDraft[q.k] = val; next();
+    };
+    $('#fitNext').onclick = go;
+    inp.addEventListener('keydown', e => { if(e.key==='Enter') go(); });
+  }
+  if($('#fitBack')) $('#fitBack').onclick = () => { fitIdx--; showFitQ(); };
+  $('#fitLater').onclick = closeSheet;
+}
+function finishFit(){
+  S.profile = Object.assign({}, fitDraft, {done:true});
+  S.name = fitDraft.name || S.name;
+  const firstTime = !S.done.fit;
+  S.done.fit = S.done.fit || Date.now();
+  S.favs = S.favs.filter(id => fitOf(id).level !== 'no');
+  save(); renderAll();
+  const rows = PATHS.map(p => ({p, f: fitOf(p.id)})).sort((a,b) => FITORDER[a.f.level] - FITORDER[b.f.level]);
+  const ic = {good:'✅', maybe:'🤔', no:'❌'}, lab = {good:'Good fit', maybe:'Possible, check the notes', no:'Not for you right now'};
+  const nGood = rows.filter(r => r.f.level !== 'no').length;
+  openSheet(`<h2>${nGood ? 'Here\'s what fits you, ' + esc(S.name) + '! 🎉' : 'Thank you, ' + esc(S.name)}</h2>
+    <p class="sub">${nGood ? 'Jobs that don\'t fit are now hidden, so you don\'t waste time.' : 'None of these paths fit right now. Read the notes below, and talk with DMW (1348) about other safe options.'}</p>
+    ${rows.map(r => `<div class="rule"><div class="n" style="background:${r.f.level==='good'?'var(--leaf-l)':r.f.level==='maybe'?'var(--sun-l)':'#eee'};font-size:18px">${ic[r.f.level]}</div>
+      <div><b>${r.p.emoji} ${esc(r.p.name)}</b><div style="color:var(--ink-2);font-size:14px;font-weight:700">${lab[r.f.level]}</div>
+      ${r.f.why.length ? `<div style="color:var(--ink-2);font-size:14px">${r.f.why.map(esc).join(' ')}</div>` : ''}</div></div>`).join('')}
+    <button class="btn block" id="fitSee" style="margin-top:14px">See my paths ›</button>
+    <button class="btn ghost block" id="fitClose" style="margin-top:10px">Close</button>`);
+  $('#fitSee').onclick = () => { closeSheet(); document.querySelector('nav.tabs button[data-v="paths"]').click(); };
+  $('#fitClose').onclick = closeSheet;
+  if(firstTime){ confetti(); }
+}
+const FITORDER = {good:0, unknown:1, maybe:1, no:2};
+document.addEventListener('click', e => { if(e.target.closest('[data-openfit]')) openFit(); });
+
 /* ============ PATHS ============ */
 function renderPaths(){
   const rate = +S.money.rate || 57;
-  $('#pathList').innerHTML = PATHS.map(p=>{
+  const hasP = S.profile && S.profile.done;
+  $('#fitBox').innerHTML = hasP
+    ? `<div class="card" style="display:flex;align-items:center;gap:12px;justify-content:space-between"><div style="font-weight:800">🎯 Showing jobs that fit ${esc(S.name||'you')}</div><button class="btn ghost small" data-openfit>✏️ Change answers</button></div>`
+    : `<div class="card next"><div class="lbl">Start here</div><h3>Which jobs fit you?</h3><p style="margin:0 0 12px;color:var(--ink-2);font-size:15px">Answer 11 quick questions. Jobs that don't fit (for example because of age limits) will be hidden.</p><button class="btn block" data-openfit>Start the check</button></div>`;
+  const rows = PATHS.map(p=>({p, f:fitOf(p.id)})).sort((a,b)=>FITORDER[a.f.level]-FITORDER[b.f.level]);
+  const nofit = rows.filter(r=>r.f.level==='no');
+  $('#pathList').innerHTML = rows.filter(r=>r.f.level!=='no').map(({p,f})=>{
     const fav = S.favs.includes(p.id);
     return `<div class="card path">
       <div class="path-top" style="background:${p.color}">
@@ -769,6 +922,8 @@ function renderPaths(){
         <h3>${esc(p.name)}</h3><p>${esc(p.short)}</p>
       </div>
       <div class="path-body">
+        ${f.level==='good'?`<div class="fitnote good">✅ Good fit for you</div>`:''}
+        ${(()=>{ const w2=f.why.filter(w=>!w.startsWith('On hold')); return f.level==='maybe' && w2.length?`<div class="fitnote maybe">🤔 Possible for you, but check:<ul>${w2.map(w=>`<li>${esc(w)}</li>`).join('')}</ul></div>`:''; })()}
         ${p.hold?`<div class="warnbox" style="margin-bottom:12px">⏸️ <b>On hold right now.</b> New workers were stopped from going to the Gulf in 2026 because of the war in the region. Call DMW at +63 2 1348 to ask if it has reopened before you spend any money.</div>`:''}
         <div class="nums">
           <div class="num big"><small>You could save per month</small><b>${esc(p.save)}</b><div style="font-size:14px;font-weight:700;color:#14693f">about ${peso(parseInt(p.save.match(/\d[\d,]*/)[0].replace(',',''))*rate)} or more</div></div>
@@ -785,7 +940,9 @@ function renderPaths(){
         <button class="btn block fav ${fav?'on':''}" data-fav="${p.id}">${fav?'⭐ One of my favorites':'☆ Add to my favorites'}</button>
       </div>
     </div>`;
-  }).join('');
+  }).join('') + (nofit.length ? `<details class="card nofit"><summary>❌ Not a fit for you right now (${nofit.length}) ›<div style="font-weight:600;font-size:14px;color:var(--ink-2)">Tap to see why</div></summary>
+    ${nofit.map(({p,f})=>`<div class="rule"><div class="n" style="background:#eee;font-size:18px">${p.emoji}</div><div><b>${esc(p.name)}</b><ul class="clean" style="color:var(--ink-2);font-size:15px">${f.why.map(w=>`<li>${esc(w)}</li>`).join('')}</ul></div></div>`).join('')}
+    <p style="font-size:14px;color:var(--ink-2);margin:8px 0 0">If something changes, tap "Change answers" above.</p></details>` : '');
   $('#avoidList').innerHTML = AVOID.map(x=>`<li style="margin-bottom:8px">${x}</li>`).join('');
 }
 $('#pathList').addEventListener('click', e=>{
@@ -804,7 +961,7 @@ function setMoneyPath(id, fill){
 function renderMoney(){
   const m = S.money;
   if(m.pay==null){ const p=PATHS.find(x=>x.id===m.path)||PATHS[0]; m.pay=Math.round((p.pay[0]+p.pay[1])/2); m.cost=p.costs; m.up=p.upPHP; }
-  $('#mPath').innerHTML = PATHS.map(p=>`<button data-mp="${p.id}" class="${m.path===p.id?'on':''}">${p.emoji} ${esc(p.name.split(' (')[0])}</button>`).join('');
+  $('#mPath').innerHTML = PATHS.map(p=>`<button data-mp="${p.id}" class="${m.path===p.id?'on':''}" style="${fitOf(p.id).level==='no'?'opacity:.4':''}">${p.emoji} ${esc(p.name.split(' (')[0])}</button>`).join('');
   const set=(id,v)=>{ const el=$(id); if(document.activeElement!==el) el.value=v; };
   set('#mPay',m.pay); set('#mCost',m.cost); set('#mMonths',m.months); set('#mRate',m.rate); set('#mUp',m.up); set('#mFam',m.fam); set('#mHome',m.home);
   calc();
@@ -932,14 +1089,14 @@ $('#openMe').onclick=()=>{
     <textarea class="i" id="rs" rows="3" placeholder="Paste your backup code here"></textarea>
     <button class="btn ghost block" id="rsBtn" style="margin-top:10px">Restore</button>
     <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
-    <label class="f">My name</label><input class="i" id="nm" value="${esc(S.name||'Jane')}">
+    <label class="f">My name</label><input class="i" id="nm" value="${esc(S.name||'')}">
     <button class="btn ghost block" id="nmBtn" style="margin-top:10px">Save name</button>
     <p style="font-size:14px;color:var(--ink-2);margin-top:16px">📲 Tip: Add this page to your home screen. In Chrome tap ⋮ then "Add to Home screen." On iPhone tap Share then "Add to Home Screen."</p>
     <button class="btn ghost block" id="clr" style="margin-top:6px;color:var(--red)">Start over (erase everything)</button>
     <button class="btn block" id="cls" style="margin-top:10px">Close</button>`);
   $('#cp').onclick=async()=>{ try{ await navigator.clipboard.writeText(code); toast('Copied! Now paste it in a message 📨'); }catch(e){ $('#rs').value=code; $('#rs').select(); toast('Select the code and copy it'); } };
   $('#rsBtn').onclick=()=>{ try{ const o=dec($('#rs').value); if(!o||typeof o!=='object'||!o.done) throw 0; S=Object.assign(structuredClone(DEF),o); save(); closeSheet(); renderAll(); toast('Restored! Welcome back 🌺'); }catch(e){ toast('That code did not work. Check it and try again.'); } };
-  $('#nmBtn').onclick=()=>{ S.name=$('#nm').value.trim()||'Jane'; save(); renderGreeting(); toast('Saved!'); };
+  $('#nmBtn').onclick=()=>{ S.name=$('#nm').value.trim(); save(); renderGreeting(); toast('Saved!'); };
   $('#clr').onclick=()=>{ if(confirm('Erase all your progress? This cannot be undone.')){ S=structuredClone(DEF); save(); closeSheet(); renderAll(); } };
   $('#cls').onclick=closeSheet;
 };
@@ -953,11 +1110,12 @@ document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{
 });
 
 function renderGreeting(){
-  const h=new Date().getHours(); const nm=S.name||'Jane';
-  $('#greet').textContent = (h<12?'Good morning, ':h<18?'Hi, ':'Good evening, ') + nm + '! 🌺';
+  const h=new Date().getHours(); const nm=S.name;
+  $('#greet').textContent = nm ? (h<12?'Good morning, ':h<18?'Hi, ':'Good evening, ') + nm + '! 🌺' : 'Welcome! 🌺';
 }
 function renderAll(){ renderGreeting(); renderHeader(); renderNext(); renderStages(); renderBadges(); renderPaths(); renderMoney(); renderSafety(); renderJobs(); }
 renderAll();
+if(!(S.profile && S.profile.done) && !Object.keys(S.done).length) setTimeout(openFit, 800);
 try{ const t=sessionStorage.getItem('jjTab'); if(t) document.querySelector(`nav.tabs button[data-v="${t}"]`)?.click(); }catch(e){}
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
 </script>

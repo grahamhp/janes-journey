@@ -1,5 +1,5 @@
 // Simple offline cache so the app opens even with weak or no signal.
-const CACHE = 'jane-journey-v2';
+const CACHE = 'jane-journey-v3';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
